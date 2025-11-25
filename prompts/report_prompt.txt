@@ -1,0 +1,20 @@
+Analyze the following information about a prospective client and provide a concise but detailed trustworthiness assessment:
+
+### UPLOADED DOCUMENTS:
+{documents_text}
+
+### WEB RESEARCH FINDINGS:
+{web_research}
+
+From the provided data you should assess:
+1.- The apparent legal legitimacy of the business - look for ABN Lookup, ASIC, or other legal registration information.
+2.- The activity and size of the business. For this you can try mixing data from sources like LinkedIn (employee count), SimilarWeb (website traffic), or similar metrics as proxies.
+3.- Cross-reference information from the uploaded documents with the web research findings to identify inconsistencies or confirm legitimacy.
+4.- Pay attention to online reputation, recent news, and reviews from the web research.
+5.- If you find any inconsistencies in the data across sources, raise a concern.
+
+When citing information from web sources, include the URL reference where relevant.
+
+Based on this information, provide a detailed vetting report. 
+
+Format your response in clear markdown with proper headings and bullet points.

@@ -1,0 +1,39 @@
+# Customer Vetting Software - Project Rules
+
+## Project Overview
+Building an MVP customer vetting tool for an Australian event organizer to assess client trustworthiness before committing services. The system analyzes 4 PDF uploads (ABN Lookup, ASIC, LinkedIn, SimilarWeb) and generates an AI-powered trustworthiness report with confidence scoring using GPT-4o.
+
+## Tech Stack
+- Streamlit (UI)
+- OpenAI GPT-4o (Analysis & Report Generation)
+- PDFPlumber (PDF text extraction)
+- Python-dotenv (Environment management)
+
+## Development Guidelines
+
+### Code Style & Structure
+- Keep adjustments minimal - don't think too far ahead
+- Add minimal fallbacks
+- Avoid too many print statements, but add the most fundamental ones (such as big loops)
+- Add comments that help understand the code
+- Keep function definitions concise but precise
+- Focus mostly on what is needed for the code to run
+- Keep project structure simple and maintainable (user prefers simpler structures)
+
+### Workflow
+- **CRITICAL: Plan and mention ideas before carrying them out**
+- **CRITICAL: Stop after each step to get user's approval and supervision before moving to next step**
+- Always ask for confirmation before proceeding to the next step when working on multi-step tasks
+- Ask follow-up questions before coding if something is unclear
+- Ensure both parties are on the same page before implementation
+
+## MVP Scope
+- 4 PDF uploads (ABN, ASIC, LinkedIn, SimilarWeb)
+- Text extraction from PDFs
+- GPT-4o analysis generating:
+  - Overall trustworthiness/legitimacy/solvency score
+  - Key findings and flags
+  - Explanation
+- Display report in Streamlit (markdown/HTML format)
+- No chatbot functionality yet (future enhancement)
+
