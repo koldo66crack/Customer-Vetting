@@ -4,6 +4,7 @@ Analyzes extracted PDF data and generates trustworthiness assessment.
 """
 
 import os
+import httpx
 from openai import OpenAI
 
 # Load prompt template
@@ -24,8 +25,11 @@ def generate_vetting_report(documents_text, web_research):
         str: Formatted markdown report with trustworthiness assessment
     """
     try:
-        # Initialize OpenAI client
-        client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+        # Initialize OpenAI client with explicit http_client to avoid proxy issues on Streamlit Cloud
+        client = OpenAI(
+            api_key=os.getenv("OPENAI_API_KEY"),
+            http_client=httpx.Client()
+        )
         
         # Format the prompt with the extracted PDF data and web research
         prompt = PROMPT_TEMPLATE.format(

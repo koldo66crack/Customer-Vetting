@@ -13,8 +13,8 @@ From the provided data you should assess:
 4.- Pay attention to online reputation, recent news, and reviews from the web research.
 5.- If you find any inconsistencies in the data across sources, raise a concern.
 
-When citing information from web sources, include the URL reference where relevant.
+When citing information from web sources, include the URL reference where relevant. If using information from a document, cite it by mentioning only its source (e.g. source: SimilarWeb). Do not mention the document number or the name of the PDF.
 
-Based on this information, provide a detailed vetting report. 
+Based on this information, provide the vetting report. Do not rephrase the information from the input sources. Instead, summarize the findings and analyze how they affect the user.
 
 Format your response in clear markdown with proper headings and bullet points.
