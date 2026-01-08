@@ -1,6 +1,6 @@
 """
 Report generation utility using OpenAI GPT-4o.
-Analyzes extracted PDF data and generates trustworthiness assessment.
+Analyzes gathered data and generates trustworthiness assessment.
 """
 
 import os
@@ -13,13 +13,12 @@ with open(PROMPT_PATH, "r", encoding="utf-8") as f:
     PROMPT_TEMPLATE = f.read()
 
 
-def generate_vetting_report(documents_text, web_research):
+def generate_vetting_report(gathered_data):
     """
     Generate a comprehensive vetting report using GPT-4o.
     
     Args:
-        documents_text (str): Combined extracted text from all uploaded PDFs
-        web_research (str): Web research findings in JSON format
+        gathered_data (str): Formatted data from all sources (LinkedIn, SimilarWeb, ABN, web search)
         
     Returns:
         str: Formatted markdown report with trustworthiness assessment
@@ -31,11 +30,8 @@ def generate_vetting_report(documents_text, web_research):
             http_client=httpx.Client()
         )
         
-        # Format the prompt with the extracted PDF data and web research
-        prompt = PROMPT_TEMPLATE.format(
-            documents_text=documents_text,
-            web_research=web_research
-        )
+        # Format the prompt with the gathered data
+        prompt = PROMPT_TEMPLATE.format(gathered_data=gathered_data)
         
         print("Sending request to GPT-4o...")
         
@@ -59,4 +55,3 @@ def generate_vetting_report(documents_text, web_research):
     
     except Exception as e:
         raise Exception(f"Error generating report: {str(e)}")
-

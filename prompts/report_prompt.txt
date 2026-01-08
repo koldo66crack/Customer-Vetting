@@ -1,20 +1,26 @@
 Analyze the following information about a prospective client and provide a concise but detailed trustworthiness assessment:
 
-### UPLOADED DOCUMENTS:
-{documents_text}
+### GATHERED DATA:
+{gathered_data}
 
-### WEB RESEARCH FINDINGS:
-{web_research}
+The data above was automatically gathered from the following sources:
+- **LinkedIn Company Details**: Company profile information (name, description, industry, employee count, etc.)
+- **LinkedIn Recent Posts**: Recent activity and engagement metrics
+- **Website Traffic (SimilarWeb)**: Monthly visits, traffic sources, country ranking
+- **ABN Lookup (Australian Business Register)**: Legal registration status, entity type, GST registration
+- **Web Search**: News articles, reviews, and other online mentions
+
+If any data source shows "[Data unavailable]", note this limitation in your assessment.
 
 From the provided data you should assess:
-1.- The apparent legal legitimacy of the business - look for ABN Lookup, ASIC, or other legal registration information.
-2.- The activity and size of the business. For this you can try mixing data from sources like LinkedIn (employee count), SimilarWeb (website traffic), or similar metrics as proxies.
-3.- Cross-reference information from the uploaded documents with the web research findings to identify inconsistencies or confirm legitimacy.
-4.- Pay attention to online reputation, recent news, and reviews from the web research.
-5.- If you find any inconsistencies in the data across sources, raise a concern.
+1. The apparent legal legitimacy of the business - check ABN status, entity type, and GST registration.
+2. The activity and size of the business - use LinkedIn employee count, follower count, post engagement, and SimilarWeb traffic as proxies.
+3. Cross-reference information across sources to identify inconsistencies or confirm legitimacy.
+4. Pay attention to online reputation, recent news, and reviews from the web search.
+5. If you find any inconsistencies in the data across sources, raise a concern.
 
-When citing information from web sources, include the URL reference where relevant. If using information from a document, cite it by mentioning only its source (e.g. source: SimilarWeb). Do not mention the document number or the name of the PDF.
+When citing information, mention the source (e.g., "According to LinkedIn...", "ABN Lookup shows...", "SimilarWeb data indicates..."). For web search results, include the URL reference where relevant.
 
-Based on this information, provide the vetting report. Do not rephrase the information from the input sources. Instead, summarize the findings and analyze how they affect the user.
+Based on this information, provide the vetting report. Do not rephrase the information from the input sources. Instead, summarize the findings and analyze how they affect the user's decision.
 
 Format your response in clear markdown with proper headings and bullet points.

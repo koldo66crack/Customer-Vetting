@@ -24,9 +24,9 @@ def search_company(company_name):
         
         # Define search queries with their result counts
         search_queries = [
-            {"query": f'"{company_name} UK"', "max_results": 10},
-            {"query": f'"{company_name} UK news"', "max_results": 10},
-            {"query": f'"{company_name} UK reviews"', "max_results": 10}
+            {"query": f'"{company_name} Australia"', "max_results": 10},
+            {"query": f'"{company_name} Australia news"', "max_results": 10},
+            {"query": f'"{company_name} Australia reviews"', "max_results": 10}
         ]
         
         # Store all results
