@@ -7,6 +7,7 @@ import streamlit as st
 from dotenv import load_dotenv
 from pipeline import run_vetting_pipeline, format_results_for_report
 from utils.report_generator import generate_vetting_report
+from utils.creditorwatch_scraper import run_creditorwatch_in_subprocess
 
 # Load environment variables from .env file
 load_dotenv()
@@ -219,9 +220,9 @@ def main():
         )
         
         abn = st.text_input(
-            "ABN (Optional)",
+            "ABN *",
             placeholder="12 345 678 901",
-            help="If known, provides more accurate ABN lookup"
+            help="Australian Business Number"
         )
     
     # Generate report button
@@ -234,41 +235,61 @@ def main():
             missing_fields.append("LinkedIn Company URL")
         if not website_domain or not website_domain.strip():
             missing_fields.append("Website Domain")
+        if not abn or not abn.strip():
+            missing_fields.append("ABN")
         
         if missing_fields:
             st.error(f"⚠️ Please fill in the required fields: {', '.join(missing_fields)}")
             return
         
         try:
-            # Step 1: Run the data gathering pipeline
-            with st.spinner("🔄 Gathering data from all sources..."):
+            # Step 1: Run the data gathering pipeline (5 concurrent sources)
+            with st.spinner("🔄 Gathering data from LinkedIn, website traffic, ABN lookup, and web search..."):
                 pipeline_results = run_vetting_pipeline(
                     company_name=company_name.strip(),
                     linkedin_url=linkedin_url.strip(),
                     website_domain=website_domain.strip(),
-                    abn=abn.strip() if abn else None
+                    abn=abn.strip()
                 )
             
-            # Show data gathering summary
+            # Show data gathering summary for first 5 sources
             success_count = sum(1 for ds in pipeline_results["data_sources"].values() if ds["status"] == "success")
-            if success_count == 5:
-                st.success("✅ All data sources retrieved successfully!")
+            total_count = len(pipeline_results["data_sources"])
+            if success_count == total_count:
+                st.success(f"✅ Initial data sources retrieved successfully! ({success_count}/{total_count})")
             else:
-                st.warning(f"⚠️ Data gathered from {success_count}/5 sources. Some sources may have failed.")
+                st.warning(f"⚠️ Data gathered from {success_count}/{total_count} sources. Some sources may have failed.")
+            
+            # Step 2: Run CreditorWatch in subprocess (avoids Streamlit/Playwright asyncio conflicts)
+            with st.spinner("🏦 Pulling financial data from CreditorWatch. This will take a minute..."):
+                # Add creditorwatch entry to results
+                pipeline_results["data_sources"]["creditorwatch"] = {"status": "pending", "data": None, "error": None}
+                try:
+                    creditorwatch_data = run_creditorwatch_in_subprocess(abn.strip())
+                    pipeline_results["data_sources"]["creditorwatch"]["status"] = "success"
+                    pipeline_results["data_sources"]["creditorwatch"]["data"] = creditorwatch_data
+                    st.success("✅ CreditorWatch data retrieved successfully!")
+                except Exception as e:
+                    pipeline_results["data_sources"]["creditorwatch"]["status"] = "error"
+                    pipeline_results["data_sources"]["creditorwatch"]["error"] = str(e)
+                    st.warning(f"⚠️ CreditorWatch failed: {str(e)}")
             
             # Show detailed status in expander
-            with st.expander("📊 View Data Source Status", expanded=(success_count < 5)):
+            with st.expander("📊 View Data Source Status"):
                 source_labels = {
                     "linkedin_details": "LinkedIn Company Details",
                     "linkedin_posts": "LinkedIn Recent Posts",
                     "website_traffic": "Website Traffic (SimilarWeb)",
                     "abn_lookup": "ABN Lookup",
-                    "web_search": "Web Search Results"
+                    "web_search": "Web Search Results",
+                    "creditorwatch": "CreditorWatch (Financial Risk)"
                 }
                 for key, ds in pipeline_results["data_sources"].items():
                     label = source_labels.get(key, key)
                     if ds["status"] == "success":
                         st.markdown(f"✅ **{label}**: Retrieved successfully")
+                    elif ds["status"] == "skipped":
+                        st.markdown(f"⏭️ **{label}**: Skipped - {ds['error']}")
                     else:
                         st.markdown(f"❌ **{label}**: {ds['error']}")
             

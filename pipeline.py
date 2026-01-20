@@ -10,15 +10,16 @@ from utils.abn_lookup import lookup_company
 from utils.web_searcher import search_company
 
 
-def run_vetting_pipeline(company_name, linkedin_url, website_domain, abn=None):
+def run_vetting_pipeline(company_name, linkedin_url, website_domain, abn):
     """
-    Run all 5 data gathering processes concurrently.
+    Run data gathering processes concurrently (excludes CreditorWatch).
+    CreditorWatch must be called separately due to Playwright threading limitations on Windows.
     
     Args:
         company_name (str): Company name for ABN lookup and web search
         linkedin_url (str): LinkedIn company profile URL
         website_domain (str): Website domain for SimilarWeb (e.g., "example.com")
-        abn (str, optional): ABN number if known
+        abn (str): Australian Business Number
         
     Returns:
         dict: Structured results from all data sources with success/error status
@@ -44,7 +45,7 @@ def run_vetting_pipeline(company_name, linkedin_url, website_domain, abn=None):
         }
     }
     
-    # Define tasks as (key, function, args) tuples
+    # Define tasks for thread pool
     tasks = [
         ("linkedin_details", get_linkedin_company_details, (linkedin_url,)),
         ("linkedin_posts", get_linkedin_company_posts, (linkedin_url, 10)),
@@ -53,8 +54,8 @@ def run_vetting_pipeline(company_name, linkedin_url, website_domain, abn=None):
         ("web_search", search_company, (company_name,))
     ]
     
-    # Run all tasks concurrently
-    with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
+    # Run tasks concurrently in thread pool
+    with concurrent.futures.ThreadPoolExecutor(max_workers=len(tasks)) as executor:
         # Submit all tasks
         future_to_key = {}
         for key, func, args in tasks:
@@ -76,8 +77,9 @@ def run_vetting_pipeline(company_name, linkedin_url, website_domain, abn=None):
     
     # Summary
     success_count = sum(1 for ds in results["data_sources"].values() if ds["status"] == "success")
+    total_count = len([ds for ds in results["data_sources"].values() if ds["status"] != "skipped"])
     print(f"\n{'='*60}")
-    print(f"Pipeline complete: {success_count}/5 sources succeeded")
+    print(f"Pipeline complete: {success_count}/{total_count} sources succeeded")
     print(f"{'='*60}\n")
     
     return results
@@ -139,12 +141,30 @@ def format_results_for_report(pipeline_results):
     else:
         output_parts.append(f"[Data unavailable: {web_search['error']}]")
     
+    # CreditorWatch
+    creditorwatch = pipeline_results["data_sources"]["creditorwatch"]
+    output_parts.append("\n### CREDITORWATCH (FINANCIAL RISK DATA) ###")
+    if creditorwatch["status"] == "success":
+        data = creditorwatch["data"]
+        # Use GPT cleaned text if available, otherwise fall back to raw data
+        if data.get("gpt_cleaned_text"):
+            output_parts.append(data["gpt_cleaned_text"])
+        else:
+            # Fallback to structured data (without full_text which is too messy)
+            clean_data = {k: v for k, v in data.items() if k != "full_text"}
+            output_parts.append(json.dumps(clean_data, indent=2, ensure_ascii=False))
+    elif creditorwatch["status"] == "skipped":
+        output_parts.append(f"[Skipped: {creditorwatch['error']}]")
+    else:
+        output_parts.append(f"[Data unavailable: {creditorwatch['error']}]")
+    
     return "\n".join(output_parts)
 
 
 def main():
     """Test function for the pipeline."""
     from dotenv import load_dotenv
+    from utils.creditorwatch_scraper import get_creditorwatch_data
     load_dotenv()
     
     print("\n=== Pipeline Test ===\n")
@@ -153,9 +173,9 @@ def main():
     company_name = input("Enter company name: ").strip()
     linkedin_url = input("Enter LinkedIn company URL: ").strip()
     website_domain = input("Enter website domain (e.g., example.com): ").strip()
-    abn = input("Enter ABN (or press Enter to skip): ").strip() or None
+    abn = input("Enter ABN: ").strip()
     
-    # Run pipeline
+    # Run pipeline (5 concurrent sources)
     results = run_vetting_pipeline(
         company_name=company_name,
         linkedin_url=linkedin_url,

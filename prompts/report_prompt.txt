@@ -9,18 +9,29 @@ The data above was automatically gathered from the following sources:
 - **Website Traffic (SimilarWeb)**: Monthly visits, traffic sources, country ranking
 - **ABN Lookup (Australian Business Register)**: Legal registration status, entity type, GST registration
 - **Web Search**: News articles, reviews, and other online mentions
+- **CreditorWatch (Financial Risk Data)**: Credit risk scores, payment ratings, court actions, director information, ASIC data, and financial history
 
 If any data source shows "[Data unavailable]", note this limitation in your assessment.
 
 From the provided data you should assess:
 1. The apparent legal legitimacy of the business - check ABN status, entity type, and GST registration.
 2. The activity and size of the business - use LinkedIn employee count, follower count, post engagement, and SimilarWeb traffic as proxies.
-3. Cross-reference information across sources to identify inconsistencies or confirm legitimacy.
-4. Pay attention to online reputation, recent news, and reviews from the web search.
-5. If you find any inconsistencies in the data across sources, raise a concern.
+3. Financial health and credit risk - analyze CreditorWatch data including risk scores, payment ratings, any court actions, defaults, or adverse events. This is critical for assessing whether the client can pay.
+4. Cross-reference information across sources to identify inconsistencies or confirm legitimacy.
+5. Pay attention to online reputation, recent news, and reviews from the web search.
+6. If you find any inconsistencies in the data across sources, raise a concern.
+7. For CreditorWatch data, flag anything that is out of the ordinary. For example, a deregistration notice is a big deal and the user should know. Status changes are also worth noting.
 
-When citing information, mention the source (e.g., "According to LinkedIn...", "ABN Lookup shows...", "SimilarWeb data indicates..."). For web search results, include the URL reference where relevant.
+When citing information, mention the source (e.g., "According to LinkedIn...", "ABN Lookup shows...", "SimilarWeb data indicates...", "CreditorWatch reports..."). For web search results, include the URL reference where relevant.
 
-Based on this information, provide the vetting report. Do not rephrase the information from the input sources. Instead, summarize the findings and analyze how they affect the user's decision.
+Based on this information, provide the vetting report with the following sections:
+1. **Overview** - Brief summary of the company
+2. **Legal & Registration Status** - ABN/ASIC registration findings
+3. **Financial Health & Credit Risk** - CreditorWatch risk score, payment rating, any red flags (court actions, defaults, etc.)
+4. **Business Activity & Online Presence** - LinkedIn, website traffic, social proof
+5. **Reputation & News** - Web search findings, any concerns
+6. **Overall Assessment** - Final recommendation with confidence level
+
+Do not rephrase the information from the input sources. Instead, summarize the findings and analyze how they affect the user's decision.
 
 Format your response in clear markdown with proper headings and bullet points.
