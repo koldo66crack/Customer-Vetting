@@ -117,7 +117,23 @@ def get_creditorwatch_data(abn: str) -> dict:
     
     with sync_playwright() as p:
         # Launch browser in headless mode for production
-        browser = p.chromium.launch(headless=True)
+        # Use system Chromium on Streamlit Cloud (Linux), fall back to Playwright's Chromium locally
+        import shutil
+        import platform
+        
+        chromium_path = None
+        if platform.system() == "Linux":
+            # Try to find system Chromium on Streamlit Cloud
+            for path in ["/usr/bin/chromium", "/usr/bin/chromium-browser", "/usr/bin/google-chrome"]:
+                if shutil.which(path.split('/')[-1]) or os.path.exists(path):
+                    chromium_path = path
+                    print(f"Using system Chromium at: {chromium_path}")
+                    break
+        
+        if chromium_path:
+            browser = p.chromium.launch(headless=True, executable_path=chromium_path)
+        else:
+            browser = p.chromium.launch(headless=True)
         context = browser.new_context()
         page = context.new_page()
         
