@@ -1,0 +1,6 @@
+# Force Unix line endings for deployment files
+runtime.txt text eol=lf
+.python-version text eol=lf
+requirements.txt text eol=lf
+packages.txt text eol=lf
+
