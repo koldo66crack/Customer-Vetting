@@ -420,8 +420,8 @@ Organize your output with a similar structure to the CreditorWatch dashboard, wh
         # Call GPT with vision
         print("    → Sending request to GPT (gpt-4o-mini)...")
         response = client.chat.completions.create(
-            #model="gpt-4o-mini",
-            model="gpt-5-nano",
+            model="gpt-4o-mini",
+            #model="gpt-5-nano",
             messages=[
                 {
                     "role": "user",
@@ -440,8 +440,9 @@ Organize your output with a similar structure to the CreditorWatch dashboard, wh
                     ]
                 }
             ],
-            max_completion_tokens=6000,  # Increased for comprehensive text output
-            #temperature=0.1  # Low temperature for consistent extraction
+            #max_completion_tokens=6000,  # Increased for comprehensive text output
+            max_tokens=6000,  # Increased for comprehensive text output
+            temperature=0.1  # Low temperature for consistent extraction
         )
         
         # Extract the response
